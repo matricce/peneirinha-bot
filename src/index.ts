@@ -17,11 +17,11 @@ const bot = new Bot(botToken);
 const throttler = apiThrottler();
 bot.api.config.use(throttler);
 
-const whitelistWords = process.env.WHITELIST?.split(',') || [];
-const blacklistWords = process.env.BLACKLIST?.split(',') || [];
+const whitelistWords = process.env.WHITELIST?.split(',').map(word => word.trim()) || [];
+const blacklistWords = process.env.BLACKLIST?.split(',').map(word => word.trim()) || [];
 
 const strIncludes = (str: string, list: string[]) =>
-  list.some(item => str.toLowerCase().includes(item.trim().toLowerCase()));
+  list.some(item => str.match(new RegExp(`\\b${item}\\b`, 'i')));
 
 const isSameChannel = (ctx: Context) => ctx?.update?.channel_post?.chat?.id === Number(chatId);
 
@@ -70,7 +70,6 @@ bot.on('channel_post').on('msg::url', async ctx => {
   } else if (strIncludes(text, whitelistWords)) {
     await bot.api.copyMessage(chatId, postChatId, postId);
     appendText([spacer, '#aprovado'].join(' '));
-    return;
   } else {
     appendText([spacer, '#reprovado', '#ignorado'].join(' '));
   }

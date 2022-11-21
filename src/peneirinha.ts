@@ -1,11 +1,11 @@
 import { Bot, InlineKeyboard } from 'grammy';
+import { replitDatabase, string2array } from './helper';
 
 export { Peneirinha };
 
+const database = replitDatabase();
 const strIncludes = (str: string, list: string[]) =>
   list.some(item => str.match(new RegExp(`\\b${item}\\b`, 'i')));
-const whitelistWords = process.env.WHITELIST?.split(',').map(word => word.trim()) || [];
-const blacklistWords = process.env.BLACKLIST?.split(',').map(word => word.trim()) || [];
 
 //deletar quando separar os bots
 const prefix_v2 = 'v2_';
@@ -17,6 +17,8 @@ const menuMain_v2 = new InlineKeyboard()
 ///////////////////////////////
 
 const Peneirinha = async (bot: Bot, ctx: any, deliveryChatId: string) => {
+  const whitelistWords = string2array(await database?.get('allowed'), ',');
+  const blacklistWords = string2array(await database?.get('blocked'), ',');
   const postChatId: number = ctx.update?.channel_post?.chat?.id;
   const postText = ctx.update?.channel_post?.text;
   const postCaption = ctx.update?.channel_post?.caption;
@@ -62,8 +64,7 @@ const Peneirinha = async (bot: Bot, ctx: any, deliveryChatId: string) => {
   if (strIncludes(text, blacklistWords)) {
     appendText([spacer, '#blacklist', '#ignorado'].join(' '));
   } else if (strIncludes(text, whitelistWords)) {
-    // await bot.api.copyMessage(deliveryChatId!, postChatId, postId); //copia as mensagens para o delivery
-    await bot.api.copyMessage(deliveryChatId!, postChatId, postId, { reply_markup: menuMain_v2 }); //copia as mensagens para o delivery
+    await bot.api.copyMessage(deliveryChatId!, postChatId, postId, { reply_markup: menuMain_v2 });
     appendText([spacer, '#aprovado'].join(' '));
   } else {
     appendText([spacer, '#reprovado', '#ignorado'].join(' '));

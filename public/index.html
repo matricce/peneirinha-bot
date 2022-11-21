@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Home</title>
+  <script type="text/javascript" src="index.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div data-js="app" hidden>
+    <header>
+      <button data-js="logout">Sair</button>
+      <h1>Peneirinha - Filtros</h1>
+    </header>
+    <main>
+      <h3>Palavras permitidas</h3>
+      <form data-js="allow">
+        <textarea name="allowed" placeholder="Palavras permitidas" data-js="allowed" rows="4" cols="50"></textarea>
+        <button type="submit">Salvar</button>
+      </form>
+      <h3>Palavras bloqueadas</h3>
+      <form data-js="block">
+        <textarea name="blocked" placeholder="Palavras bloqueadas" data-js="blocked" rows="4" cols="50"></textarea>
+        <button type="submit">Salvar</button>
+      </form>
+    </main>
+  </div>
+</body>
+
+</html>

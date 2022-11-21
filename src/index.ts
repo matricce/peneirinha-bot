@@ -3,6 +3,9 @@ import 'dotenv/config';
 import { apiThrottler } from '@grammyjs/transformer-throttler';
 import { Delivery, deliveryEvents } from './delivery';
 import { Peneirinha } from './peneirinha';
+import app, { updates, authorized, removeItem } from './api';
+
+app();
 
 const botToken = process.env.BOT_TOKEN;
 const peneirinhaChatIds = process.env.PENEIRINHA_CHAT_IDS?.split(',').map(id => id.trim()) || [];
@@ -38,3 +41,18 @@ bot.on('channel_post').on('msg', async ctx => {
 });
 
 bot.start();
+
+setInterval(() => {
+  for (const item of updates) {
+    const content = Object.entries(item)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join('\n');
+    for (const contact of authorized) {
+      bot.api
+        .sendMessage(contact, content)
+        .then(() => console.log(`Mensagem enviada para ${contact}`))
+        .catch(err => console.log(`Erro ao enviar mensagem para ${contact}: ${err}`));
+    }
+    removeItem(item);
+  }
+}, 5000);

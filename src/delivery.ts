@@ -42,6 +42,14 @@ const deleteButton_v2 = [
   },
 ];
 
+const objectOption = {
+  swap: true,
+  disable_preview: true,
+  format: null,
+  delete: true,
+  action: null,
+};
+
 const Delivery = async (bot: Bot, ctx: any) => {
   {
     const postChatId: number = ctx.update?.channel_post?.chat?.id;
@@ -77,26 +85,24 @@ export async function deliveryEvents(bot: Bot) {
       [prefix_v2 + 'menu-job-ask']: () => ({ gotoMenu: menuJob_v2 }),
       [prefix_v2 + 'menu-discard-ask']: () => ({ gotoMenu: menuDiscard_v2 }),
       [prefix_v2 + 'menu-home']: () => ({ gotoMenu: menuMain_v2 }),
-      [prefix_v2 + 'option-ok']: () => ({ swap: true, disable_preview: true }),
+      [prefix_v2 + 'option-ok']: () => ({ ...objectOption, format: 'strikethrough' }),
       [prefix_v2 + 'option-nok']: () => ({
-        swap: true,
-        disable_preview: true,
+        ...objectOption,
         format: 'strikethrough',
       }),
       [prefix_v2 + 'option-discard']: () => ({
-        swap: true,
-        disable_preview: true,
+        ...objectOption,
         format: 'strikethrough',
         delete: true,
       }),
       [prefix_v2 + 'option-repeat']: () => ({
-        swap: true,
-        disable_preview: true,
+        ...objectOption,
         format: 'strikethrough',
       }),
       [prefix_v2 + 'option-delete-post']: () => ({
+        ...objectOption,
+        swap: false,
         action: 'delete-post',
-        disable_preview: true,
         format: 'strikethrough',
       }),
     };

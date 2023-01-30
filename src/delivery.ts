@@ -46,7 +46,7 @@ const objectOption = {
   swap: true,
   disable_preview: true,
   format: null,
-  delete: true,
+  delete: false,
   action: null,
 };
 

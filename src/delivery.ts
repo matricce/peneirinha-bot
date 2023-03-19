@@ -164,13 +164,19 @@ export async function deliveryEvents(bot: Bot) {
             ctx.update?.callback_query?.message?.text ||
             ctx.update?.callback_query?.message?.caption
           )?.length || 0;
-        const entities = setup.format && [
-          {
+        const entities = [
+          ...(ctx.update?.callback_query?.message?.entities ||
+            ctx.update?.callback_query?.message?.caption_entities ||
+            []),
+          setup.format && {
             type: setup.format,
             offset: 0,
             length: textLength,
           },
-        ];
+        ]
+          .flat()
+          .filter(e => !(!setup.format && e?.type === 'strikethrough'))
+          .filter(Boolean);
         if (ctx.update?.callback_query?.message?.text) {
           await bot.api
             .editMessageText(postChatId, postId, ctx.update?.callback_query?.message?.text, {

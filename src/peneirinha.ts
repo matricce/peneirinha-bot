@@ -1,9 +1,10 @@
 import { Bot, InlineKeyboard } from 'grammy';
-import { replitDatabase, string2array } from './helper';
+import { string2array } from './helper';
+import { sqliteDatabase } from './sqlite';
 
 export { Peneirinha };
 
-const database = replitDatabase();
+const database = sqliteDatabase();
 const strIncludes = (str: string, list: string[]) =>
   list.some(item => str.match(new RegExp(`\\b${item}\\b`, 'i')));
 

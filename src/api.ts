@@ -1,6 +1,6 @@
 import { createHash, createHmac } from 'crypto';
 import express from 'express';
-import { replitDatabase } from './helper';
+import { sqliteDatabase } from './sqlite';
 import path from 'path';
 
 export let updates: { author: number; username?: string; type: string; list: string }[] = [];
@@ -9,7 +9,7 @@ export const authorized = process.env.USERS?.split(',').map(Number).filter(Boole
 
 const isAuth = (id: number) => id && authorized.includes(id);
 
-const database = replitDatabase();
+const database = sqliteDatabase();
 export default function () {
   const app = express();
   app.use(express.json());

@@ -1,7 +1,6 @@
-import { Bot, Context, InlineKeyboard } from 'grammy';
+import { Bot, Context } from 'grammy';
 import 'dotenv/config';
 import { apiThrottler } from '@grammyjs/transformer-throttler';
-import { Delivery, deliveryEvents } from './delivery';
 import { Peneirinha } from './peneirinha';
 import app, { updates, authorized, removeItem } from './api';
 
@@ -26,17 +25,13 @@ bot.api.config.use(throttler);
 const isSameChannel = (ctx: Context, _chatId?: string | string[]): Boolean =>
   [_chatId].flat().filter(Boolean).includes(ctx?.update?.channel_post?.chat?.id?.toString());
 
-deliveryEvents(bot);
-
 bot.on('channel_post').on('msg', async ctx => {
   const entities = ctx.update?.channel_post?.entities || ctx.update?.channel_post?.caption_entities;
   if (
     isSameChannel(ctx, peneirinhaChatIds) &&
     entities?.some(entity => ['url', 'text_link'].includes(entity.type))
   ) {
-    Peneirinha(bot, ctx, deliveryChatId);
-  } else if (isSameChannel(ctx, deliveryChatId)) {
-    Delivery(bot, ctx);
+    Peneirinha(bot, ctx);
   }
 });
 

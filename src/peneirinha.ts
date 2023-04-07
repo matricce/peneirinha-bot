@@ -1,4 +1,4 @@
-import { Bot, InlineKeyboard } from 'grammy';
+import { Bot } from 'grammy';
 import { string2array } from './helper';
 import { sqliteDatabase } from './sqlite';
 
@@ -8,16 +8,7 @@ const database = sqliteDatabase();
 const strIncludes = (str: string, list: string[]) =>
   list.some(item => str.match(new RegExp(`\\b${item}\\b`, 'i')));
 
-//deletar quando separar os bots
-const prefix_v2 = 'v2_';
-const menuMain_v2 = new InlineKeyboard()
-  .text('👩‍💻Postar Vaga', prefix_v2 + 'menu-job-ask')
-  .text('📰Postar Conteúdo', prefix_v2 + 'menu-content-ask')
-  .row()
-  .text('🗑️|♻️|👎Descartar', prefix_v2 + 'menu-discard-ask');
-///////////////////////////////
-
-const Peneirinha = async (bot: Bot, ctx: any, deliveryChatId: string) => {
+const Peneirinha = async (bot: Bot, ctx: any) => {
   const whitelistWords = string2array(await database?.get('allowed'), ',');
   const blacklistWords = string2array(await database?.get('blocked'), ',');
   const postChatId: number = ctx.update?.channel_post?.chat?.id;
@@ -65,7 +56,6 @@ const Peneirinha = async (bot: Bot, ctx: any, deliveryChatId: string) => {
   if (strIncludes(text, blacklistWords)) {
     appendText([spacer, '#blacklist', '#ignorado'].join(' '));
   } else if (strIncludes(text, whitelistWords)) {
-    await bot.api.copyMessage(deliveryChatId!, postChatId, postId, { reply_markup: menuMain_v2 });
     appendText([spacer, '#aprovado'].join(' '));
   } else {
     appendText([spacer, '#reprovado', '#ignorado'].join(' '));
